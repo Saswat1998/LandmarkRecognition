@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Predict Landmark app</title>
+	<style type="text/css">
+		{
+			font-size: 30px;
+		}
+	</style>
+</head>
+<body>
+	<input id="image-selector" type="file">
+	<button id="predict-button">Predict</button>
+	<p>Landmark-id: <span id="id-prediction"></span></p>
+	<p>Landmark-name: <span id="name-prediction"></span></p>
+	<img id="selected-image" src=""/>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script>
+		let base64Image;
+		$("#image-selector").change(function(){
+			let reader = new FileReader();
+			reader.onload = function(e) {
+				// body...
+				let dataURL = reader.result;
+				$('#selected-image').attr("src", dataURL);
+				base64Image = dataURL.replace("data:image/jpeg;base64,", "");
+				console.log(base64Image);
+			}
+			reader.readAsDataURL($("#image-selector")[0].files[0]);
+			$("#id-prediction").text("");
+			$("#name-prediction").text("");
+
+		});
+		$("#predict-button").click(function(event){
+			let message = {
+				image: base64Image
+			}
+			console.log(message);
+			$.post("http://localhost:5000/predict", JSON.stringify(message), function(response) {
+				// body...
+				$("#id-prediction").text(response.prediction.landmark_id.toFixed(6));
+				$("#name-prediction").text(response.prediction.landmark_name.toFixed(6));
+				console.log(response);
+			});
+		});
+	</script>
+</body>
+</html>
