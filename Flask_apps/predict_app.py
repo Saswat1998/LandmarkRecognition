@@ -39,6 +39,7 @@ get_model()
 def predict():
 	message = request.get_json(force=True)
 	encoded = message['image']
+	encoded += "=" * ((4 - len(encoded) % 4) % 4)
 	decoded = base64.b64decode(encoded)
 	#print(decoded)
 	image = Image.open(io.BytesIO(decoded))
