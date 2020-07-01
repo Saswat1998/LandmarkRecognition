@@ -29,6 +29,8 @@ from keras.models import model_from_json
 from flask import redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from gevent.pywsgi import WSGIServer
+import json
+import wikipedia
 
 # Define a flask app
 app = Flask(__name__)
@@ -69,7 +71,12 @@ def model_predict(img_path, model):
     preprocessedImg = preprocess_image(img_path)
     temp = loaded_model.predict(preprocessedImg)[0].max()
     val = np.where(loaded_model.predict(preprocessedImg)[0] == temp)[0][0]
-    return str(val)
+    return val
+
+def load_desc(place):
+    str = wikipedia.summary(place, sentences=1)
+    return str
+
     
 
     
@@ -95,12 +102,20 @@ def upload():
 
         # Make prediction
         preds = model_predict(file_path, loaded_model)
+        with open('newtrain0-450.json', 'r') as f:
+            landmarks_dict = json.load(f)
+
+        for landmark in landmarks_dict:
+            if(landmark['landmark_id'] == preds):
+                preds = landmark['Name']
 
         # Process your result for human
         # pred_class = preds.argmax(axis=-1)            # Simple argmax
         #pred_class = decode_predictions(preds, top=1)   # ImageNet Decode
-        #result = str(pred_class[0][0][1])               # Convert to string
-        return preds
+        #result = str(pred_class[0][0][1])
+               # Convert to string
+        res = preds + ": " + load_desc(preds)
+        return res
     return None
 
 
