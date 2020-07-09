@@ -74,8 +74,11 @@ def model_predict(img_path, model):
     return val
 
 def load_desc(place):
-    str = wikipedia.summary(place, sentences=1)
-    return str
+	try:
+		str = wikipedia.summary(place, sentences=1)
+	except:
+		str = ""
+	return str
 
     
 
@@ -107,6 +110,7 @@ def upload():
 
         # Make prediction
         preds = model_predict(file_path, loaded_model)
+        print(preds)
         with open('newtrain0-450.json', 'r') as f:
             landmarks_dict = json.load(f)
 
