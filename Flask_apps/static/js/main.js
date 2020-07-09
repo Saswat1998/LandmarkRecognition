@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
     // Init
     $('.image-section').hide();
     $('.loader').hide();
@@ -8,7 +8,7 @@ $(document).ready(function () {
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
                 $('#imagePreview').hide();
                 $('#imagePreview').fadeIn(650);
@@ -16,7 +16,7 @@ $(document).ready(function () {
             reader.readAsDataURL(input.files[0]);
         }
     }
-    $("#imageUpload").change(function () {
+    $("#imageUpload").change(function() {
         $('.image-section').show();
         $('#btn-predict').show();
         $('#result').text('');
@@ -25,13 +25,15 @@ $(document).ready(function () {
     });
 
     // Predict
-    $('#btn-predict').click(function () {
+    $('#btn-predict').click(function() {
         var form_data = new FormData($('#upload-file')[0]);
 
         // Show loading animation
         $(this).hide();
         $('.loader').show();
-
+        $('.knowmore').show();
+        $('.show').fadeOut(600);
+        $('#upload-file').fadeOut(600);
         // Make prediction by calling api /predict
         $.ajax({
             type: 'POST',
@@ -41,7 +43,7 @@ $(document).ready(function () {
             cache: false,
             processData: false,
             async: true,
-            success: function (data) {
+            success: function(data) {
                 // Get and display the result
                 $('.loader').hide();
                 $('#result').fadeIn(600);
